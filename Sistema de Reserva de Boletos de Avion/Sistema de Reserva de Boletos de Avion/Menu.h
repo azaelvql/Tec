@@ -11,5 +11,7 @@ private:
 	//Métodos
 public:
 	void MostrarMenu() const;
+	void VerMisReservaciones() const;
+
 };
 

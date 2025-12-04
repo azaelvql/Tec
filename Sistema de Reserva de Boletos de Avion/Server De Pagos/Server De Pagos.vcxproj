@@ -29,8 +29,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d90ace4b-a806-41bd-a95a-027b638844dd}</ProjectGuid>
-    <RootNamespace>SistemadeReservadeBoletosdeAvion</RootNamespace>
+    <ProjectGuid>{1e808a57-6322-40e6-a672-d0684f9b4e17}</ProjectGuid>
+    <RootNamespace>ServerDePagos</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -176,23 +176,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Admin.cpp" />
-    <ClCompile Include="AdministradorDeSesion.cpp" />
-    <ClCompile Include="Cliente.cpp" />
-    <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="Pago.cpp" />
-    <ClCompile Include="Reservacion.cpp" />
-    <ClCompile Include="Sistema de Reserva de Boletos de Avion.cpp" />
-    <ClCompile Include="Usuario.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Admin.h" />
-    <ClInclude Include="AdministradorDeSesion.h" />
-    <ClInclude Include="Cliente.h" />
-    <ClInclude Include="Menu.h" />
-    <ClInclude Include="Pago.h" />
-    <ClInclude Include="Reservacion.h" />
-    <ClInclude Include="Usuario.h" />
+    <ClCompile Include="Server De Pagos.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

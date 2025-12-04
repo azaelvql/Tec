@@ -184,6 +184,7 @@
     <ClCompile Include="Reservacion.cpp" />
     <ClCompile Include="Sistema de Reserva de Boletos de Avion.cpp" />
     <ClCompile Include="Usuario.cpp" />
+    <ClCompile Include="Vuelo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Admin.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Pago.h" />
     <ClInclude Include="Reservacion.h" />
     <ClInclude Include="Usuario.h" />
+    <ClInclude Include="Vuelo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

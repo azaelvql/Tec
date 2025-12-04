@@ -1,5 +1,8 @@
 #pragma once
 #include "AdministradorDeSesion.h"
+
+using namespace::std;
+
 class Reservacion
 {
 public:
@@ -7,13 +10,13 @@ public:
 
 public:
 	//métodos
-	bool ReservarVuelo(int idUsuario)
+	bool Reservar(int idUsuario)
 	{
 		AdministradorDeSesion adminSesion;
 		
 		if (adminSesion.isLoggedIn(idUsuario))
 		{
-			//realizar la reservacion del vuelo
+			//realizar la reservacion del 
 		}
 		else
 		{

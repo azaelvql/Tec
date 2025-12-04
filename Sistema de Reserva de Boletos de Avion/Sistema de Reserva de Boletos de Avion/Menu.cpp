@@ -1,4 +1,5 @@
 #include "Menu.h" 
+#include "Vuelo.h"
 #include "Usuario.h"
 #include "Pago.h"  
 #include <iostream>
@@ -9,23 +10,9 @@
 #include <algorithm>
 #include <Windows.h> 
 
-using namespace std;
+using namespace::std;
 
-// Estructura simple para mantener vuelo en memoria
-struct Vuelo {
-    int id;
-    string origen;
-    string destino;
-    string salida_fecha;    
-    string salida_dia;      
-    string salida_hora;     
-    string llegada_fecha;
-    string llegada_dia;
-    string llegada_hora;
-    int tipo; // 2=Internacional,1=Nacional
-    double precio;
-    vector<int> asientos; // tamaño 10, 0 libre,1 ocupado
-};
+
 
 // leer todos los vuelos desde Vuelos.txt
 static vector<Vuelo> LeerVuelos() {
@@ -38,12 +25,36 @@ static vector<Vuelo> LeerVuelos() {
         if (line.empty()) continue;
         stringstream ss(line);
         Vuelo v;
-        v.asientos.assign(10, 0);
-        ss >> v.id >> v.origen >> v.destino
-            >> v.salida_fecha >> v.salida_dia >> v.salida_hora
-            >> v.llegada_fecha >> v.llegada_dia >> v.llegada_hora
-            >> v.tipo >> v.precio;
-        for (int i = 0; i < 10; ++i) ss >> v.asientos[i];
+        v.setAsientos(vector<int>(10, 0));
+
+        int tmpId; string tmpOrigen, tmpDestino;
+        string sfecha, sdia, shora, lfecha, ldia, lhora;
+        int tipo; double precio; string numeroAvion;
+
+        ss >> tmpId >> tmpOrigen >> tmpDestino
+            >> sfecha >> sdia >> shora
+            >> lfecha >> ldia >> lhora
+            >> tipo >> precio
+            >> numeroAvion;
+
+        v.setId(tmpId);
+        v.setOrigen(tmpOrigen);
+        v.setDestino(tmpDestino);
+        v.setSalidaFecha(sfecha);
+        v.setSalidaDia(sdia);
+        v.setSalidaHora(shora);
+        v.setLlegadaFecha(lfecha);
+        v.setLlegadaDia(ldia);
+        v.setLlegadaHora(lhora);
+        v.setTipo(tipo);
+        v.setPrecio(precio);
+        v.setNumeroAvion(numeroAvion);
+
+        for (int i = 0; i < 10; ++i) {
+            int seat = 0;
+            ss >> seat;
+            v.setAsiento(i, seat);
+        }
         vuelos.push_back(v);
     }
     in.close();
@@ -55,11 +66,14 @@ static bool GuardarVuelos(const vector<Vuelo>& vuelos) {
     ofstream out("Vuelos.txt", ios::trunc);
     if (!out.is_open()) return false;
     for (const auto& v : vuelos) {
-        out << v.id << " " << v.origen << " " << v.destino << " "
-            << v.salida_fecha << " " << v.salida_dia << " " << v.salida_hora << " "
-            << v.llegada_fecha << " " << v.llegada_dia << " " << v.llegada_hora << " "
-            << v.tipo << " " << v.precio;
-        for (int s : v.asientos) out << " " << s;
+        out << v.getId() << " " << v.getOrigen() << " " << v.getDestino() << " "
+            << v.getSalidaFecha() << " " << v.getSalidaDia() << " " << v.getSalidaHora() << " "
+            << v.getLlegadaFecha() << " " << v.getLlegadaDia() << " " << v.getLlegadaHora() << " "
+            << v.getTipo() << " " << v.getPrecio() << " "
+            << v.getNumeroAvion();
+
+        auto seats = v.getAsientos();
+        for (int s : seats) out << " " << s;
         out << "\n";
     }
     out.close();
@@ -103,7 +117,7 @@ static int ObtenerSiguienteIdReserva() {
 // obtiene siguiente id vuelo
 static int ObtenerSiguienteIdVuelo(const vector<Vuelo>& vuelos) {
     int last = 0;
-    for (const auto& v : vuelos) if (v.id > last) last = v.id;
+    for (const auto& v : vuelos) if (v.getId() > last) last = v.getId();
     return last + 1;
 }
 
@@ -128,10 +142,10 @@ static void RegistrarVuelo() {
     AsegurarVuelosExistente();
     vector<Vuelo> vuelos = LeerVuelos();
     Vuelo v;
-    v.id = ObtenerSiguienteIdVuelo(vuelos);
+    v.setId(ObtenerSiguienteIdVuelo(vuelos));
 
-    cout << "Origen: "; cin >> v.origen;
-    cout << "Destino: "; cin >> v.destino;
+    cout << "Origen: "; string org; cin >> org; v.setOrigen(org);
+    cout << "Destino: "; string dest; cin >> dest; v.setDestino(dest);
 
     int d, m, a;
     cout << "Fecha de salida - Dia: "; cin >> d;
@@ -139,36 +153,38 @@ static void RegistrarVuelo() {
     cout << "Fecha de salida - Año: "; cin >> a;
 
     char buf[20]; sprintf_s(buf, "%02d/%02d/%04d", d, m, a);
-    v.salida_fecha = string(buf);
+    v.setSalidaFecha(string(buf));
 
-    cout << "Dia de la semana (Salida): "; cin >> v.salida_dia;
+    cout << "Dia de la semana (Salida): "; string sd; cin >> sd; v.setSalidaDia(sd);
 
     int hh, mm;
     cout << "Hora salida (hora): "; cin >> hh;
     cout << "Minutos salida: "; cin >> mm;
     sprintf_s(buf, "%02d:%02d", hh, mm);
-    v.salida_hora = string(buf);
+    v.setSalidaHora(string(buf));
 
     cout << "Fecha de llegada - Dia: "; cin >> d;
     cout << "Fecha de llegada - Mes: "; cin >> m;
     cout << "Fecha de llegada - Año: "; cin >> a;
     sprintf_s(buf, "%02d/%02d/%04d", d, m, a);
-    v.llegada_fecha = string(buf);
+    v.setLlegadaFecha(string(buf));
 
-    cout << "Dia de la semana (Llegada): "; cin >> v.llegada_dia;
+    cout << "Dia de la semana (Llegada): "; string ld; cin >> ld; v.setLlegadaDia(ld);
 
     cout << "Hora llegada (hora): "; cin >> hh;
     cout << "Minutos llegada: "; cin >> mm;
     sprintf_s(buf, "%02d:%02d", hh, mm);
-    v.llegada_hora = string(buf);
+    v.setLlegadaHora(string(buf));
 
-    cout << "Precio por asiento: "; cin >> v.precio;
-    cout << "Tipo (Internacional=2, Nacional=1): "; cin >> v.tipo;
+    cout << "Precio por asiento: "; double precio; cin >> precio; v.setPrecio(precio);
+    cout << "Tipo (Internacional=2, Nacional=1): "; int tipo; cin >> tipo; v.setTipo(tipo);
 
-    v.asientos.assign(10, 0);
+    cout << "Numero de avion (6 digitos): "; string numAv; cin >> numAv; v.setNumeroAvion(numAv);
+
+    v.setAsientos(vector<int>(10, 0));
 
     vuelos.push_back(v);
-    if (GuardarVuelos(vuelos)) cout << "Vuelo registrado con ID: " << v.id << "\n";
+    if (GuardarVuelos(vuelos)) cout << "Vuelo registrado con ID: " << v.getId() << "\n";
     else cout << "Error al guardar vuelo.\n";
 
     getchar();
@@ -187,31 +203,33 @@ static void ReservarVueloParaCliente() {
     cout << "Vuelos disponibles:\n";
     for (const auto& v : vuelos) {
         int disponibles = 0;
-        for (int s : v.asientos) if (s == 0) ++disponibles;
+        auto seats = v.getAsientos();
+        for (int s : seats) if (s == 0) ++disponibles;
 
-        cout << "ID: " << v.id << "  " << v.origen << " - " << v.destino << "\n";
-        cout << "Salida: " << v.salida_dia << " " << v.salida_fecha << " " << v.salida_hora << "\n";
-        cout << "Llegada: " << v.llegada_dia << " " << v.llegada_fecha << " " << v.llegada_hora << "\n";
-        cout << "Asientos disponibles: " << disponibles << "  Precio: $MXN" << v.precio << "\n\n";
+        cout << "ID: " << v.getId() << "  " << v.getOrigen() << " - " << v.getDestino() << "\n";
+        cout << "Numero de avion: " << v.getNumeroAvion() << "\n";
+        cout << "Salida: " << v.getSalidaDia() << " " << v.getSalidaFecha() << " " << v.getSalidaHora() << "\n";
+        cout << "Llegada: " << v.getLlegadaDia() << " " << v.getLlegadaFecha() << " " << v.getLlegadaHora() << "\n";
+        cout << "Asientos disponibles: " << disponibles << "  Precio: $MXN" << v.getPrecio() << "\n\n";
     }
 
     int idSeleccionado;
     cout << "Ingrese ID del vuelo a reservar: "; cin >> idSeleccionado;
 
-    auto it = find_if(vuelos.begin(), vuelos.end(), [&](const Vuelo& x) { return x.id == idSeleccionado; });
+    auto it = find_if(vuelos.begin(), vuelos.end(), [&](const Vuelo& x) { return x.getId() == idSeleccionado; });
     if (it == vuelos.end()) { cout << "ID inválido.\n"; getchar(); return; }
 
     Vuelo& vuelo = *it;
 
     cout << "Seleccione asiento (1-10):\n";
-    MostrarAsientosConColor(vuelo.asientos);
+    MostrarAsientosConColor(vuelo.getAsientos());
 
     int asiento;
     while (true) {
         cout << "\nNumero de asiento: "; cin >> asiento;
         if (asiento < 1 || asiento > 10) { cout << "Asiento inválido.\n"; continue; }
-        if (vuelo.asientos[asiento - 1] == 1) { cout << "Asiento ocupado.\n"; continue; }
-        vuelo.asientos[asiento - 1] = 1;
+        if (vuelo.getAsiento(asiento - 1) == 1) { cout << "Asiento ocupado.\n"; continue; }
+        vuelo.setAsiento(asiento - 1, 1);
         break;
     }
 
@@ -229,17 +247,16 @@ static void ReservarVueloParaCliente() {
 
     ofstream out("Reservas.txt", ios::app);
     if (out.is_open()) {
-        out << idRegistro << " " << idUsuario << " " << vuelo.id << " " << asiento << " " << status << "\n";
+        out << idRegistro << " " << idUsuario << " " << vuelo.getId() << " " << asiento << " " << status << "\n";
         out.close();
 
         cout << "Reserva creada. IDReserva: " << idRegistro << "\n";
-        //Pago
+
         if (paga == 1) {
             Pago p;
             p.MostrarMenuPago(idRegistro, Usuario::GetCurrentUser());
             return;
         }
-
 
         else cout << "Regresando al menu del cliente.\n";
     }
@@ -280,12 +297,13 @@ static void VerReservasCliente() {
         ss >> idReserva >> idUserFile >> idVuelo >> asiento >> status;
 
         if (idUserFile == userId) {
-            auto it = find_if(vuelos.begin(), vuelos.end(), [&](const Vuelo& v) { return v.id == idVuelo; });
+            auto it = find_if(vuelos.begin(), vuelos.end(), [&](const Vuelo& v) { return v.getId() == idVuelo; });
             if (it != vuelos.end()) {
                 const Vuelo& v = *it;
                 cout << "ID Reserva: " << idReserva << "\n";
-                cout << "Vuelo: " << v.origen << " -> " << v.destino << "\n";
-                cout << "Fecha/Hora salida: " << v.salida_fecha << " " << v.salida_hora << "\n";
+                cout << "Vuelo: " << v.getOrigen() << " -> " << v.getDestino() << "\n";
+                cout << "Numero de avion: " << v.getNumeroAvion() << "\n";
+                cout << "Fecha/Hora salida: " << v.getSalidaFecha() << " " << v.getSalidaHora() << "\n";
                 cout << "Asiento: " << asiento << "\n";
                 cout << "Estado: " << status << "\n";
                 cout << "---------------------------\n";
@@ -303,9 +321,6 @@ static void VerReservasCliente() {
 
     if (idSel == 0) return;
 
-
-
-    // Verificar si realmente existe y pertenece al usuario y NO está pagada
     {
         ifstream check("Reservas.txt");
         string ln;
@@ -323,7 +338,6 @@ static void VerReservasCliente() {
         }
     }
 
-    // Si no encontró reserva válida para pagar:
     cout << "No es posible pagar esa reserva (no existe, no es tuya o ya está pagada).\n";
     getchar();
 }

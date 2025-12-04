@@ -1,50 +1,49 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <iostream>
 #include <memory>
 
-using namespace std;
+using namespace::std;
 
-class Usuario
-{
-	//atributos
+class Usuario {
+private:
+    int id = 0;
+    string nombre;
+    string correo;
+    string password;
+    int permisos = 0; // 1 admin, 2 cliente
+
+    static shared_ptr<Usuario> currentUser;
+
 public:
-	int id = 0;
-	string nombre;
-	string correo;
-	string password;
-	int permisos = 0; // 1 = admin, 2 = cliente, 0 = genérico
+    // constructores
+    Usuario() = default;
+    Usuario(int id, const string& nombre, const string& correo, const string& password, int permisos = 0);
 
-	//métodos
-public:
-	//constructor parametrizado
-	Usuario(int id, string nombre, string correo, string password, int permisos = 0)
-		:id(id), nombre(nombre), correo(correo), password(password), permisos(permisos) {
-	};
+    // métodos existentes (firma)
+    bool IniciarSesion();
+    bool ValidarInicioSesion(const string& enteredEmail, const string& enteredPassword) const;
 
-	//constructor por defecto
-	Usuario() {};
+    bool RegistrarUsuario(string nombre, string correo, string password);
+    vector<shared_ptr<Usuario>> ObtenerUsuarios(const string& filename);
 
-	// Mantener firma original
-	bool IniciarSesion();
+    // getters / setters
+    int getId() const;
+    void setId(int v);
 
-	bool ValidarInicioSesion(const string& enteredEmail,
-		const string& enteredPassword) const {
-		return (correo == enteredEmail && password == enteredPassword);
-	};
+    string getNombre() const;
+    void setNombre(const string& v);
 
-	int getId() const;
-	string getCorreo() const;
-	int getPermisos() const { return permisos; }
+    string getCorreo() const;
+    void setCorreo(const string& v);
 
-	// Registrar un usuario (escribirá en Clientes.txt)
-	bool RegistrarUsuario(string nombre, string correo, string password);
+    string getPassword() const;
+    void setPassword(const string& v);
 
-	// Obtener usuarios desde archivo indicado (Admin.txt o Clientes.txt)
-	vector<shared_ptr<Usuario>> ObtenerUsuarios(const string& filename);
+    int getPermisos() const;
+    void setPermisos(int v);
 
-	// Puntero al usuario que inició sesión para que Menu pueda consultarlo
-	static shared_ptr<Usuario> currentUser;
-	static shared_ptr<Usuario> GetCurrentUser() { return currentUser; }
+    // current user helpers
+    static shared_ptr<Usuario> GetCurrentUser();
+    static void SetCurrentUser(shared_ptr<Usuario> u);
 };

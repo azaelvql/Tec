@@ -39,6 +39,9 @@
     <ClCompile Include="Pago.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Vuelo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Usuario.h">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Pago.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vuelo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

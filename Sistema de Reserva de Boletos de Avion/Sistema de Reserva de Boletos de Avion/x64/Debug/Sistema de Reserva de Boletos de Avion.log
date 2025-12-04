@@ -1,2 +1,9 @@
-﻿  Menu.cpp
+﻿  AdministradorDeSesion.cpp
+  Menu.cpp
+  Pago.cpp
+  Reservacion.cpp
+  Sistema de Reserva de Boletos de Avion.cpp
+  Usuario.cpp
+  Vuelo.cpp
+  Generating Code...
   Sistema de Reserva de Boletos de Avion.vcxproj -> C:\Users\azaaaa\Documents\Programas\Sistema de Reserva de Boletos de Avion\x64\Debug\Sistema de Reserva de Boletos de Avion.exe

@@ -1,6 +1,4 @@
-1 1 1 1 Pagado
-2 1 2 1 NoPagado
-3 1 2 5 Pagado
-4 1 3 7 Pagado
-5 2 1 5 Pagado
-6 2 1 9 Pagado
+1 1 1 6 Pagado
+2 1 2 7 Pagado
+3 2 3 10 Pagado
+4 2 4 2 Pagado
